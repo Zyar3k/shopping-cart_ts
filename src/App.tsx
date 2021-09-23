@@ -31,11 +31,26 @@ const App = () => {
 
   console.log(data);
 
-  const getTotalItems = (items: CartItemType[]) => {
+  const getTotalItems = (items: CartItemType[]) =>
     items.reduce((ack: number, item) => ack + item.amount, 0);
-  };
 
-  const handleAddToCart = (clickedItem: CartItemType) => null;
+  const handleAddToCart = (clickedItem: CartItemType) => {
+    setCartItems((prev) => {
+      // is item in cart
+      const isItemInCart = prev.find((item) => item.id === clickedItem.id);
+
+      if (isItemInCart) {
+        return prev.map((item) =>
+          item.id === clickedItem.id
+            ? { ...item, amount: item.amount + 1 }
+            : item
+        );
+      }
+
+      // first time is added
+      return [...prev, { ...clickedItem, amount: 1 }];
+    });
+  };
 
   const handleRemoveFromCart = () => null;
 
@@ -56,11 +71,7 @@ const App = () => {
         />
       </Drawer>
       <StyledButton onClick={() => setIsCartOpen(true)}>
-        <Badge
-          badgeContent
-          // badgeContent={getTotalItems(cartItems)}
-          color='error'
-        >
+        <Badge badgeContent={getTotalItems(cartItems)} color='error'>
           <AddShoppingCart />
         </Badge>
       </StyledButton>
