@@ -1,11 +1,12 @@
 import { useQuery } from "react-query";
 // components
-import Item from "./components/Item";
+import Item from "./components/Item/Item";
 import { Badge, Drawer, Grid, LinearProgress } from "@material-ui/core";
 // styles
 import { Wrapper, StyledButton } from "./App.styles";
 import { useState } from "react";
 import { AddShoppingCart } from "@material-ui/icons";
+import Cart from "./components/Cart/Cart";
 
 export type CartItemType = {
   id: number;
@@ -30,11 +31,13 @@ const App = () => {
 
   console.log(data);
 
-  const getTotalItems = (items: CartItemType[]) => null;
+  const getTotalItems = (items: CartItemType[]) => {
+    items.reduce((ack: number, item) => ack + item.amount, 0);
+  };
 
-  const handleAddToCart = (clickedItem: CartItemType) => {};
+  const handleAddToCart = (clickedItem: CartItemType) => null;
 
-  const handleRemoveFromCart = () => {};
+  const handleRemoveFromCart = () => null;
 
   if (isLoading) return <LinearProgress />;
   if (error) return <div>Something went wrong...</div>;
@@ -46,10 +49,18 @@ const App = () => {
         open={isCartOpen}
         onClose={() => setIsCartOpen(false)}
       >
-        Cart open
+        <Cart
+          cartItems={cartItems}
+          addToCart={handleAddToCart}
+          removeFromCart={handleRemoveFromCart}
+        />
       </Drawer>
       <StyledButton onClick={() => setIsCartOpen(true)}>
-        <Badge badgeContent={getTotalItems(cartItems)} color='error'>
+        <Badge
+          badgeContent
+          // badgeContent={getTotalItems(cartItems)}
+          color='error'
+        >
           <AddShoppingCart />
         </Badge>
       </StyledButton>
