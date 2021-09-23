@@ -1,8 +1,11 @@
 import { useQuery } from "react-query";
+// components
+import Item from "./components/Item";
+import { Grid, LinearProgress } from "@material-ui/core";
 // styles
 import { Wrapper } from "./App.styles";
 
-export type CartTypeItem = {
+export type CartItemType = {
   id: number;
   category: string;
   description: string;
@@ -12,18 +15,35 @@ export type CartTypeItem = {
   amount: number;
 };
 
-const getProducts = async (): Promise<CartTypeItem[]> =>
+const getProducts = async (): Promise<CartItemType[]> =>
   (await fetch("https://fakestoreapi.com/products")).json();
 
 const App = () => {
-  const { data, isLoading, error } = useQuery<CartTypeItem[]>(
+  const { data, isLoading, error } = useQuery<CartItemType[]>(
     "products",
     getProducts
   );
+
   console.log(data);
+
+  const getTotalItems = () => {};
+
+  const handleAddToCart = (clickedItem: CartItemType) => {};
+
+  const handleRemoveFromCart = () => {};
+
+  if (isLoading) return <LinearProgress />;
+  if (error) return <div>Something went wrong...</div>;
+
   return (
     <Wrapper>
-      <h1>Start project</h1>
+      <Grid container spacing={3}>
+        {data?.map((item) => (
+          <Grid item key={item.id} xs={12} sm={4}>
+            <Item item={item} handleAddToCart={handleAddToCart} />
+          </Grid>
+        ))}
+      </Grid>
     </Wrapper>
   );
 };
